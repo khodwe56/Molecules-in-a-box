@@ -774,7 +774,8 @@ public:
 //        delims.insert("           ");
 //        delims.insert("            ");
         string temp = filename;
-        string originalFile = filename + ".pdb";
+        string temper(filename.begin(),filename.end()-1);
+        string originalFile = temper + ".pdb";
         string randomString;
         int length = 4;
         static const char alphanum[] =
@@ -821,30 +822,30 @@ public:
                 for(int ii = 0;ii<taker.size();ii++){
                     trim(taker[ii]);
                 }
-                cout<<taker.size()<<endl;
+                //cout<<taker.size()<<endl;
                 for(int ii = 0;ii<taker.size();ii++){
                     cout<<taker[ii]<<endl;
                 }
-                cout<<taker[6]<<taker[7]<<taker[8]<<endl;
+                //cout<<taker[6]<<taker[7]<<taker[8]<<endl;
 
                 string xx = taker[6];
                 float xxx = stof(xx);
                 xxx += lmin;
-                xxx -= 100;
+                //xxx -= 100;
                 string tx = to_string(xxx);
                 string txx(tx.begin(),tx.end()-3);
                 taker[6] = txx;
                 string yy = taker[7];
                 float yyy = stof(yy);
                 yyy += wmin;
-                yyy -= 100;
+                //yyy -= 100;
                 string ty = to_string(yyy);
                 string tyy(ty.begin(),ty.end()-3);
                 taker[7] = tyy;
                 string zz = taker[8];
                 float zzz = stof(zz);
                 zzz += hmin;
-                zzz -= 100;
+                //zzz -= 100;
                 string tz = to_string(zzz);
                 string tzz(tz.begin(),tz.end()-3);
                 taker[8] = tzz;
@@ -970,7 +971,6 @@ public:
 
 };
 
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -981,6 +981,9 @@ int main() {
     PDB d4("/home/omkarkh1/CLionProjects/pdb/2csn.pdb");
     PDB d5("/home/omkarkh1/CLionProjects/pdb/1pa9.pdb");
     PDB d6("/home/omkarkh1/CLionProjects/pdb/1e2s.pdb");
+//    PDB d7("/home/omkarkh1/CLionProjects/pdb/2csn.pdb");
+//    PDB d8("/home/omkarkh1/CLionProjects/pdb/1pa9.pdb");
+//    PDB d9("/home/omkarkh1/CLionProjects/pdb/1e2s.pdb");
 
     d1.write_to_file("/home/omkarkh1/CLionProjects/pdb/d1.txt");
     d1.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a1.txt");
@@ -994,6 +997,12 @@ int main() {
     d5.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a5.txt");
     d6.write_to_file("/home/omkarkh1/CLionProjects/pdb/d6.txt");
     d6.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a6.txt");
+//    d7.write_to_file("/home/omkarkh1/CLionProjects/pdb/d7.txt");
+//    d7.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+//    d8.write_to_file("/home/omkarkh1/CLionProjects/pdb/d8.txt");
+//    d8.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+//    d9.write_to_file("/home/omkarkh1/CLionProjects/pdb/d9.txt");
+//    d9.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a9.txt");
 
     Atom a1("a1");
     Atom a2("a2");
@@ -1001,6 +1010,9 @@ int main() {
     Atom a4("a4");
     Atom a5("a5");
     Atom a6("a6");
+//    Atom a7("a7");
+//    Atom a8("a8");
+//    Atom a9("a9");
 
     vector<float> xa1 = a1.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a1.txt");
     vector<float> ya1 = a1.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a1.txt");
@@ -1026,12 +1038,27 @@ int main() {
     vector<float> ya6 = a6.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a6.txt");
     vector<float> za6 = a6.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a6.txt");
 
+//    vector<float> xa7 = a7.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+//    vector<float> ya7 = a7.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+//    vector<float> za7 = a7.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+//
+//    vector<float> xa8 = a8.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+//    vector<float> ya8 = a8.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+//    vector<float> za8 = a8.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+//
+//    vector<float> xa9 = a9.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+//    vector<float> ya9 = a9.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+//    vector<float> za9 = a9.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+
     vi dim1 = a1.getDimensions(xa1,ya1,za1);
     vi dim2 = a2.getDimensions(xa2,ya2,za2);
     vi dim3 = a3.getDimensions(xa3,ya3,za3);
     vi dim4 = a4.getDimensions(xa4,ya4,za4);
     vi dim5 = a5.getDimensions(xa5,ya5,za5);
     vi dim6 = a6.getDimensions(xa6,ya6,za6);
+//    vi dim7 = a7.getDimensions(xa7,ya7,za7);
+//    vi dim8 = a8.getDimensions(xa8,ya8,za8);
+//    vi dim9 = a9.getDimensions(xa9,ya9,za9);
 
 //    cout<<dim1[0]<<" "<<dim1[1]<<" "<<dim1[2]<<endl;
 //    cout<<dim2[0]<<" "<<dim2[1]<<" "<<dim2[2]<<endl;
@@ -1044,13 +1071,77 @@ int main() {
     //cout<<algorithm.L << " "<<algorithm.W << " "<<algorithm.H <<endl;
 
     vector<pair<vi,string>>a;
+    vector<string>v1;
+    vector<string>v2;
+    vector<string>v3;
+    vector<string>v4;
+    vector<string>v5;
+    vector<string>v6;
+//    vector<string>v7;
+//    vector<string>v8;
+//    vector<string>v9;
 
-    a.push_back({dim1,"2csn"});
-    a.push_back({dim2,"1pa9"});
-    a.push_back({dim3,"1e2s"});
-//    a.push_back(dim4);
-//    a.push_back(dim5);
-//    a.push_back(dim6);
+    boost::split(v1, d1.file_name, boost::is_any_of("/"));
+    boost::split(v2, d2.file_name, boost::is_any_of("/"));
+    boost::split(v3, d3.file_name, boost::is_any_of("/"));
+    boost::split(v4, d4.file_name, boost::is_any_of("/"));
+    boost::split(v5, d5.file_name, boost::is_any_of("/"));
+    boost::split(v6, d6.file_name, boost::is_any_of("/"));
+//    boost::split(v7, d7.file_name, boost::is_any_of("/"));
+//    boost::split(v8, d8.file_name, boost::is_any_of("/"));
+//    boost::split(v9, d9.file_name, boost::is_any_of("/"));
+
+    string n1 = v1[v1.size()-1];
+    string n2 = v2[v2.size()-1];
+    string n3 = v3[v3.size()-1];
+    string n4 = v4[v4.size()-1];
+    string n5 = v5[v5.size()-1];
+    string n6 = v6[v6.size()-1];
+//    string n7 = v7[v7.size()-1];
+//    string n8 = v8[v8.size()-1];
+//    string n9 = v9[v9.size()-1];
+
+    string name1(n1.begin(),n1.end()-4);
+    string name2(n2.begin(),n2.end()-4);
+    string name3(n3.begin(),n3.end()-4);
+    string name4(n4.begin(),n4.end()-4);
+    string name5(n5.begin(),n5.end()-4);
+    string name6(n6.begin(),n6.end()-4);
+//    string name7(n7.begin(),n7.end()-4);
+//    string name8(n8.begin(),n8.end()-4);
+//    string name9(n9.begin(),n9.end()-4);
+
+    char letters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    char x1 = letters[rand() % 62];
+    char x2 = letters[rand() % 62];
+    char x3 = letters[rand() % 62];
+    char x4 = letters[rand() % 62];
+    char x5 = letters[rand() % 62];
+    char x6 = letters[rand() % 62];
+    char x7 = letters[rand() % 62];
+    char x8 = letters[rand() % 62];
+    char x9 = letters[rand() % 62];
+
+    name1.push_back(x1);
+    name2.push_back(x2);
+    name3.push_back(x3);
+    name4.push_back(x4);
+    name5.push_back(x5);
+    name6.push_back(x6);
+//    name7.push_back(x7);
+//    name8.push_back(x8);
+//    name9.push_back(x9);
+
+    a.push_back({dim1,name1});
+    a.push_back({dim2,name2});
+    a.push_back({dim3,name3});
+    a.push_back({dim4,name4});
+    a.push_back({dim5,name5});
+    a.push_back({dim6,name6});
+//    a.push_back({dim7,name7});
+//    a.push_back({dim8,name8});
+//    a.push_back({dim9,name9});
+
     auto start = high_resolution_clock::now();
     algorithm.dynamicDistance(a);
     auto stop = high_resolution_clock::now();
