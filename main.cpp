@@ -984,6 +984,238 @@ public:
        //dynamicDistanceUtil(a,dp,h,0,0,visited,count,visitedl,visitedw,visitedh);
     }
 
+    void dynamicDistanceUtil3(vector<vector<int> >a,vector< vector< vector<int> > > &dp,int h,int w, int l,vi &visited,int count,vi &visitedl,vi &visitedw,vi &visitedh,vector<vi>&visxy,vs names,unordered_map<string,int>&mapper){
+        int flag = 1;
+        int templ = l;
+        int tempw = w;
+        int temp2l = L;
+        int temp2w = W;
+        unordered_map<int,pair<pair<int,int>,int>> mapp;
+        while(flag){
+            flag = 1;
+            int flagger = 0;
+            if(h > H){
+                break;
+            }
+//            h = 201;
+            for(int i =0;i<a.size();i++){
+                if(visited[i] == 0){
+                    flag = 0;
+                }
+            }
+            int mh = 0;
+            l = templ;
+            w = tempw;
+            int tempStorage;
+            for(int i = 0;i<a.size();i++){
+                count++;
+                if(visited[i] == 0 and flagger == 0){
+                    flagger = 1;
+                    tempStorage = a[i][1];
+                }
+                if(visited[i] == 1){
+                    continue;
+                }
+
+                if(l < L and l + a[i][0] < L){
+                    mapp[i] = {{l,w},h};
+                    l += a[i][0];
+                    visited[i] = 1;
+                    mh = max(mh,a[i][2]);
+                }
+                cout<<l<<" "<<w<<endl;
+                if(visited[i] == 1){
+                        for(int j = l-a[i][0];j<l;j++){
+                            for(int k = 0;k < a[i][1];k++)
+                                visxy[j][k] = 1;
+                        }
+                }
+            }
+
+            l = templ;
+            w = tempw;
+            w += tempStorage;
+            for(int i = 0;i<a.size();i++){
+                count++;
+                if(visited[i] == 1){
+                    continue;
+                }
+
+                if(w < W and w + a[i][1] < W){
+                    mapp[i] = {{l,w},h};
+                    w += a[i][1];
+                    visited[i] = 1;
+                    mh = max(mh,a[i][2]);
+                }
+                cout<<l<<" "<<w<<endl;
+                if(visited[i] == 1){
+                        for(int j = 0;j<l;j++){
+                            for(int k = w - a[i][1];k < w;k++)
+                                visxy[j][k] = 1;
+                        }
+                }
+            }
+            l = L;
+            w = W;
+            flagger = 0;
+            tempStorage = 0;
+            for(int i = 0;i<a.size();i++){
+                count++;
+                if(visited[i] == 0 and flagger == 0){
+                    flagger = 1;
+                    tempStorage = a[i][1];
+                }
+                if(visited[i] == 1){
+                    continue;
+                }
+                if(l > 0 and l - a[i][0] > 0 and visxy[l][w] == 0 and visxy[l-a[i][0]][w] == 0){
+                    mapp[i] = {{l-a[i][0],w-a[i][1]},h};
+                    l -= a[i][0];
+                    visited[i] = 1;
+                    mh = max(mh,a[i][2]);
+                }
+                cout<<l<<" "<<w<<endl;
+
+            }
+            l = L;
+            w = W;
+            tempStorage = 0;
+            w -= tempStorage;
+            for(int i = 0;i<a.size();i++){
+                count++;
+                if(visited[i] == 0 and flagger == 0){
+                    flagger = 1;
+                    tempStorage = a[i][1];
+                }
+                if(visited[i] == 1){
+                    continue;
+                }
+                if(l > 0 and l - a[i][0] > 0 and visxy[l][w] == 0 and visxy[l][w - a[i][1]] == 0){
+                    mapp[i] = {{l-a[i][0],w-a[i][1]},h};
+                    w -= a[i][1];
+                    visited[i] = 1;
+                    mh = max(mh,a[i][2]);
+                }
+                cout<<l<<" "<<w<<endl;
+            }
+            for(int i = 0;i<a.size();i++){
+                cout<<visited[i]<<endl;
+            }
+            for(int i = 0;i<=L;i++){
+                for(int j = 0;j<=W;j++){
+                    cout<<visxy[i][j]<<" ";
+                }
+                cout<<endl;
+            }
+            h += mh;
+        }
+
+        for(int i = 0;i<a.size();i++){
+            pdbGenerator(i,names[i],mapp);
+        }
+        //Write down the recursive case.
+        //dynamicDistanceUtil(a,dp,h,0,0,visited,count,visitedl,visitedw,visitedh);
+    }
+
+    void pdbGenerator(int index,string filename,unordered_map<int,pair<pair<int,int>,int> >   xsol){
+        string temp = filename;
+        string temper(filename.begin(),filename.end()-1);
+        string originalFile = temper + ".pdb";
+        string randomString;
+        int length = 4;
+        static const char alphanum[] =
+                "0123456789"
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                "abcdefghijklmnopqrstuvwxyz";
+
+        srand( (unsigned) time(NULL) * getpid());
+
+        for (int i = 0; i < length; ++i)
+            randomString += alphanum[rand() % (sizeof(alphanum) - 1)];
+        temp+= randomString;
+        temp += ".pdb";
+        std::ifstream  input(originalFile);
+        vector<string> x;
+        int tX = L;
+        int tY = W;
+        int tZ = H;
+
+        int lmin = xsol[index].first.first;
+        int wmin = xsol[index].first.second;
+        int hmin = xsol[index].second;
+        hmin -= 10;
+        for( std::string line;getline(input,line);){
+            if(line.find("ATOM   ") != std::string::npos and line.find("REMARK") == std::string::npos){
+                removeRedundantSpaces(line);
+                vector<string>taker;
+                boost::split(taker, line, boost::is_any_of(" "));
+
+                for(int ii = 0;ii<taker.size();ii++){
+                    trim(taker[ii]);
+                }
+                for(int ii = 0;ii<taker.size();ii++){
+                    cout<<taker[ii]<<endl;
+                }
+                string xx = taker[6];
+                float xxx = stof(xx);
+                xxx += lmin;
+                //xxx -= 100;
+                string tx = to_string(xxx);
+                string txx(tx.begin(),tx.end()-3);
+                taker[6] = txx;
+                string yy = taker[7];
+                float yyy = stof(yy);
+                yyy += wmin;
+                string ty = to_string(yyy);
+                string tyy(ty.begin(),ty.end()-3);
+                taker[7] = tyy;
+                string zz = taker[8];
+                float zzz = stof(zz);
+                zzz += hmin;
+                string tz = to_string(zzz);
+                string tzz(tz.begin(),tz.end()-3);
+                taker[8] = tzz;
+                string resultant;
+                string t1 = taker[0];
+                string t2 = "       ";
+                t2.replace(t2.end()-taker[1].size(),t2.end(),taker[1]);
+                string t2point5 = "  ";
+                string t3 = "   ";
+                t3.replace(t3.begin() ,t3.begin() + taker[2].size(),taker[2]);
+                string t4 = " ";
+                t4.replace(t4.end(),t4.end() - taker[3].size(),taker[3]);
+                string t5 = "  ";
+                t5.replace(t5.end() - taker[4].size(),t5.end(),taker[4]);
+                string t6 = "    ";
+                t6.replace(t6.end() - taker[5].size(),t6.end(),taker[5]);
+                string t7 = "            ";
+                t7.replace(t7.end() - taker[6].size(),t7.end(),taker[6]);
+                string t8 = "        ";
+                t8.replace(t8.end() - taker[7].size(),t8.end(),taker[7]);
+                string t9 = "        ";
+                t9.replace(t9.end() - taker[8].size(),t9.end(),taker[8]);
+                string t10 = "      ";
+                t10.replace(t10.end() - taker[9].size(),t10.end(),taker[9]);
+                string t11 = "      ";
+                t11.replace(t11.end() - taker[10].size(),t11.end(),taker[10]);
+                string t12 = "            ";
+                t12.replace(t12.end() - taker[11].size(),t12.end(),taker[11]);
+                resultant += t1+t2+t2point5+t3+t4+t5+t6+t7+t8+t9+t10+t11+t12;
+                x.push_back(resultant);
+            }
+            else{
+                x.push_back(line);
+            }
+
+        }
+        ofstream fout;
+        fout << std::fixed << std::setprecision(3);
+        fout.open(temp);
+        for(auto liner:x){
+            fout<<liner<<endl;
+        }
+
+    }
     void removeRedundantSpaces(string &str){
         int n = str.length();
         int i = 0, j = -1;
@@ -1158,8 +1390,8 @@ public:
         vector<int> visitedl(L+1,0);
         vector<int> visitedh(H+1,0);
         vector<vector<int> >visxy(L+1,vector<int>(W+1));
-        for(int i = 0;i<L;i++){
-            for(int j = 0;j<W;j++){
+        for(int i = 0;i<=L;i++){
+            for(int j = 0;j<=W;j++){
                 visxy[i][j] = 0;
             }
         }
@@ -1182,7 +1414,7 @@ public:
             names.push_back(a[i].S);
         }
         unordered_map<string,int> mapper;
-       dynamicDistanceUtil2(p,dp,0,0,0,visited,count,visitedl,visitedw,visitedh,visxy,names,mapper);
+       dynamicDistanceUtil3(p,dp,0,0,0,visited,count,visitedl,visitedw,visitedh,visxy,names,mapper);
        // unordered_set<int> s;
 //        for(int i = 0;i<=tX;i++){
 //            for(int j = 0;j<=tY;j++){
@@ -1239,6 +1471,9 @@ int main() {
     PDB d7("/home/omkarkh1/CLionProjects/pdb/2csn.pdb");
     PDB d8("/home/omkarkh1/CLionProjects/pdb/1pa9.pdb");
     PDB d9("/home/omkarkh1/CLionProjects/pdb/1e2s.pdb");
+    PDB d10("/home/omkarkh1/CLionProjects/pdb/2csn.pdb");
+    PDB d11("/home/omkarkh1/CLionProjects/pdb/1pa9.pdb");
+    PDB d12("/home/omkarkh1/CLionProjects/pdb/1e2s.pdb");
 
     d1.write_to_file("/home/omkarkh1/CLionProjects/pdb/d1.txt");
     d1.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a1.txt");
@@ -1258,6 +1493,12 @@ int main() {
     d8.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a8.txt");
     d9.write_to_file("/home/omkarkh1/CLionProjects/pdb/d9.txt");
     d9.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+    d10.write_to_file("/home/omkarkh1/CLionProjects/pdb/d10.txt");
+    d10.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a10.txt");
+    d11.write_to_file("/home/omkarkh1/CLionProjects/pdb/d11.txt");
+    d11.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a11.txt");
+    d12.write_to_file("/home/omkarkh1/CLionProjects/pdb/d12.txt");
+    d12.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a12.txt");
 
     Atom a1("a1");
     Atom a2("a2");
@@ -1268,6 +1509,9 @@ int main() {
     Atom a7("a7");
     Atom a8("a8");
     Atom a9("a9");
+    Atom a10("a10");
+    Atom a11("a11");
+    Atom a12("a12");
 
     vector<float> xa1 = a1.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a1.txt");
     vector<float> ya1 = a1.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a1.txt");
@@ -1305,6 +1549,18 @@ int main() {
     vector<float> ya9 = a9.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
     vector<float> za9 = a9.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
 
+    vector<float> xa10 = a7.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+    vector<float> ya10 = a7.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+    vector<float> za10 = a7.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+
+    vector<float> xa11 = a8.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+    vector<float> ya11 = a8.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+    vector<float> za11 = a8.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+
+    vector<float> xa12 = a9.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+    vector<float> ya12 = a9.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+    vector<float> za12 = a8.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+
     vi dim1 = a1.getDimensions(xa1,ya1,za1);
     vi dim2 = a2.getDimensions(xa2,ya2,za2);
     vi dim3 = a3.getDimensions(xa3,ya3,za3);
@@ -1314,7 +1570,9 @@ int main() {
     vi dim7 = a7.getDimensions(xa7,ya7,za7);
     vi dim8 = a8.getDimensions(xa8,ya8,za8);
     vi dim9 = a9.getDimensions(xa9,ya9,za9);
-
+    vi dim10 = a7.getDimensions(xa10,ya10,za10);
+    vi dim11 = a8.getDimensions(xa11,ya11,za11);
+    vi dim12 = a9.getDimensions(xa12,ya12,za12);
 //    cout<<dim1[0]<<" "<<dim1[1]<<" "<<dim1[2]<<endl;
 //    cout<<dim2[0]<<" "<<dim2[1]<<" "<<dim2[2]<<endl;
 //    cout<<dim3[0]<<" "<<dim3[1]<<" "<<dim3[2]<<endl;
@@ -1335,6 +1593,9 @@ int main() {
     vector<string>v7;
     vector<string>v8;
     vector<string>v9;
+    vector<string>v10;
+    vector<string>v11;
+    vector<string>v12;
 
     boost::split(v1, d1.file_name, boost::is_any_of("/"));
     boost::split(v2, d2.file_name, boost::is_any_of("/"));
@@ -1345,6 +1606,9 @@ int main() {
     boost::split(v7, d7.file_name, boost::is_any_of("/"));
     boost::split(v8, d8.file_name, boost::is_any_of("/"));
     boost::split(v9, d9.file_name, boost::is_any_of("/"));
+    boost::split(v10, d10.file_name, boost::is_any_of("/"));
+    boost::split(v11, d11.file_name, boost::is_any_of("/"));
+    boost::split(v12, d12.file_name, boost::is_any_of("/"));
 
     string n1 = v1[v1.size()-1];
     string n2 = v2[v2.size()-1];
@@ -1355,6 +1619,9 @@ int main() {
     string n7 = v7[v7.size()-1];
     string n8 = v8[v8.size()-1];
     string n9 = v9[v9.size()-1];
+    string n10 = v10[v10.size()-1];
+    string n11 = v11[v11.size()-1];
+    string n12 = v12[v12.size()-1];
 
     string name1(n1.begin(),n1.end()-4);
     string name2(n2.begin(),n2.end()-4);
@@ -1365,6 +1632,9 @@ int main() {
     string name7(n7.begin(),n7.end()-4);
     string name8(n8.begin(),n8.end()-4);
     string name9(n9.begin(),n9.end()-4);
+    string name10(n10.begin(),n10.end()-4);
+    string name11(n11.begin(),n11.end()-4);
+    string name12(n12.begin(),n12.end()-4);
 
     char letters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     char x1 = letters[rand() % 62];
@@ -1376,6 +1646,9 @@ int main() {
     char x7 = letters[rand() % 62];
     char x8 = letters[rand() % 62];
     char x9 = letters[rand() % 62];
+    char x10 = letters[rand() % 62];
+    char x11 = letters[rand() % 62];
+    char x12 = letters[rand() % 62];
 
     name1.push_back(x1);
     name2.push_back(x2);
@@ -1386,6 +1659,9 @@ int main() {
     name7.push_back(x7);
     name8.push_back(x8);
     name9.push_back(x9);
+    name10.push_back(x10);
+    name11.push_back(x11);
+    name12.push_back(x12);
 
     a.push_back({dim1,name1});
     a.push_back({dim2,name2});
@@ -1396,6 +1672,9 @@ int main() {
     a.push_back({dim7,name7});
     a.push_back({dim8,name8});
     a.push_back({dim9,name9});
+    a.push_back({dim10,name10});
+    a.push_back({dim11,name11});
+    a.push_back({dim12,name12});
 
     auto start = high_resolution_clock::now();
     algorithm.dynamicDistance(a);
