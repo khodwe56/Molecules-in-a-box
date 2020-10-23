@@ -474,6 +474,261 @@ public:
         }
     }
 
+    void dynamicDistanceUtil2(vector<vector<int> >a,vector< vector< vector<int> > > &dp,int h,int w, int l,vi &visited,int count,vi &visitedl,vi &visitedw,vi &visitedh,vector<vi>&visxy,vs names,unordered_map<string,int>&mapper){
+        //Figure out the base case.
+        int flag = 1;
+        int sign = -1;
+        unordered_set<int> counter;
+        int dh = 0;
+        //unordered_map<string,int> mapper;
+        //string names[a.size()];
+        while(flag){
+            sign = sign * (-1);
+            flag = 1;
+            if(h > H){
+                break;
+            }
+
+            reset(visxy);
+            for(int i =0;i<a.size();i++){
+                if(visited[i] == 0){
+                    flag = 0;
+                }
+            }
+
+            int mh = INT_MIN;
+            int templ = l;
+            int tempw = w;
+            // cout<<a.size()<<endl;
+
+            // First For Loop
+
+            for(int i = 0;i<a.size();i++){
+                count++;
+//                if(i!=0 and a[i][0] == a[i-1][0] and a[i][1] == a[i-1][1] and a[i][2] == a[i-1][2] and visited[i-1] == 0){
+//                    continue;
+//                }
+                if(visited[i] == 1){
+                    continue;
+                }
+                if(l + a[i][0] < L and w + a[i][1] < W){
+                    for(int j = l;j<a[i][0] + l;j++){
+                        if( l >= L){
+                            break;
+                        }
+                        if(visitedl[j] == 0 or visitedl[j] == 1){
+                            //visitedl[j] = 1;
+                            for(int k = w;k<a[i][1] + w;k++){
+                                if(k >= W){
+                                    break;
+                                }
+
+                                if(visitedw[k] == 0 or visitedw[k] == 1){
+                                    //visitedw[k] = 1;
+                                    for(int b = h;b<a[i][2] + h;b++){
+                                        mapper[names[i]] = count;
+                                        mh = max(mh,a[i][2]);
+                                        visitedl[j] = 1;
+                                        visitedw[k] = 1;
+                                        visitedh[b] = 1;
+                                        visxy[j][k] = 1;
+                                        dp[j][k][b] = count;
+                                        counter.insert(count);
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                    count++;
+                    visited[i] = 1;
+                }
+                l += a[i][0];
+                w += a[i][1];
+                l++;
+                w++;
+
+            }
+
+            l = templ;
+            w = tempw;
+
+            // Second for loop.
+            for(int i = 0;i<a.size();i++){
+                count++;
+//                if(i!=0 and a[i][0] == a[i-1][0] and a[i][1] == a[i-1][1] and a[i][2] == a[i-1][2] and visited[i-1] == 0){
+//                    continue;
+//                }
+                if(visited[i] == 1){
+                    continue;
+                }
+
+
+                if(l + a[i][0] < L and w + a[i][1] < W){
+                    for(int j = w;j<a[i][1] + w;j++){
+
+                        if( w >= W){
+                            break;
+                        }
+                        if(visitedw[j] == 0 or visitedw[j] == 1){
+                            //visitedw[j] = 1;
+                            for(int k = l;k<a[i][0] + l;k++){
+                                if(visxy[k][j] == 1)
+                                {
+                                    if(k < L - 1 and w < L - 1){
+                                        l++;
+                                    }
+                                    continue;
+                                }
+                                else{
+                                    visxy[j][k] = 1;
+                                }
+                                if(k >= W){
+                                    break;
+                                }
+
+                                if(visitedl[k] == 0 or visitedl[k] == 1){
+                                    //visitedl[k] = 1;
+                                    for(int b = h;b<a[i][2] + h;b++){
+                                        mapper[names[i]] = count;
+                                        visitedl[k] = 1;
+                                        visitedw[j] = 1;
+                                        visitedh[b] = 1;
+                                        dp[k][j][b] = count;
+                                        counter.insert(count);
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                    count++;
+                    visited[i] = 1;
+                }
+                l += a[i][0];
+                l++;
+                w++;
+
+            }
+
+            l = templ;
+            w = tempw;
+
+            // Third for loop.
+            for(int i = 0;i<a.size();i++){
+                count++;
+//                if(i!=0 and a[i][0] == a[i-1][0] and a[i][1] == a[i-1][1] and a[i][2] == a[i-1][2] and visited[i-1] == 0){
+//                    continue;
+//                }
+                if(visited[i] == 1){
+                    continue;
+                }
+                if(l + a[i][0] < L and w + a[i][1] < W){
+                    for(int j = l;j<a[i][0] + l;j++){
+                        if( l >= L){
+                            break;
+                        }
+                        if(visitedl[j] == 0 or visitedl[j] == 1){
+                            visitedl[j] = 1;
+                            for(int k = w;k<a[i][1] + w;k++){
+
+                                if(visxy[j][k] == 1)
+                                {
+                                    if(k < W - 1 and w < W - 1){
+                                        k++;
+                                        w++;
+                                    }
+                                    continue;
+                                }
+                                else{
+                                    visxy[j][k] = 1;
+                                }
+
+                                if(k >= W){
+                                    break;
+                                }
+
+                                if(visitedw[k] == 0 or visitedw[k] == 1){
+                                    visitedw[k] = 1;
+                                    for(int b = h;b<a[i][2] + h;b++){
+                                        visitedl[j] = 1;
+                                        visitedw[k] = 1;
+                                        visitedh[b] = 1;
+                                        mapper[names[i]] = count;
+                                        dp[j][k][b] = count;
+                                        counter.insert(count);
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                    count++;
+                    visited[i] = 1;
+                }
+                w += a[i][1];
+                l++;
+                w++;
+
+            }
+
+//            if(sign == -1){
+//                reverseCuboid(dp,0,0,L,W,h,h + mh);
+//            }
+
+            h += mh;
+
+
+
+        }
+
+        for(auto x : counter){
+            //cout<<x<<endl;
+        }
+        // Try for brute force approach;
+        int n = a.size();
+        for(int i = 0;i < n;i++){
+            if(visited[i] == 0){
+                vector<pair<int,pair<int,int> >> px = locateonX(dp,a[i][0],a[i][1],a[i][2]);
+                if(px.size() != 0){
+                    count++;
+                    putValue(dp,px,count,mapper,names,i);
+                    counter.insert(count);
+                    visited[i] = 1;
+                    continue;
+                }
+//                if(visited[i] == 1)
+//                    continue;
+                vector<pair<int,pair<int,int> >> py = locateonY(dp,a[i][0],a[i][1],a[i][2]);
+                if(py.size() != 0){
+                    count++;
+                    putValue(dp,py,count,mapper,names,i);
+                    counter.insert(count);
+                    visited[i] = 1;
+                    continue;
+                }
+//                if(visited[i] == 1)
+//                    continue;
+                vector<pair<int,pair<int,int> >> pz = locateonZ(dp,a[i][0],a[i][1],a[i][2]);
+                if(pz.size() != 0){
+                    count++;
+                    putValue(dp,pz,count,mapper,names,i);
+                    counter.insert(count);
+                    visited[i] = 1;
+                    continue;
+                }
+
+
+            }
+        }
+
+        //Write down the recursive case.
+        //dynamicDistanceUtil(a,dp,h,0,0,visited,count,visitedl,visitedw,visitedh);
+    }
+
     void dynamicDistanceUtil(vector<vector<int> >a,vector< vector< vector<int> > > &dp,int h,int w, int l,vi &visited,int count,vi &visitedl,vi &visitedw,vi &visitedh,vector<vi>&visxy,vs names,unordered_map<string,int>&mapper){
         //Figure out the base case.
         int flag = 1;
@@ -927,7 +1182,7 @@ public:
             names.push_back(a[i].S);
         }
         unordered_map<string,int> mapper;
-       dynamicDistanceUtil(p,dp,0,0,0,visited,count,visitedl,visitedw,visitedh,visxy,names,mapper);
+       dynamicDistanceUtil2(p,dp,0,0,0,visited,count,visitedl,visitedw,visitedh,visxy,names,mapper);
        // unordered_set<int> s;
 //        for(int i = 0;i<=tX;i++){
 //            for(int j = 0;j<=tY;j++){
@@ -981,9 +1236,9 @@ int main() {
     PDB d4("/home/omkarkh1/CLionProjects/pdb/2csn.pdb");
     PDB d5("/home/omkarkh1/CLionProjects/pdb/1pa9.pdb");
     PDB d6("/home/omkarkh1/CLionProjects/pdb/1e2s.pdb");
-//    PDB d7("/home/omkarkh1/CLionProjects/pdb/2csn.pdb");
-//    PDB d8("/home/omkarkh1/CLionProjects/pdb/1pa9.pdb");
-//    PDB d9("/home/omkarkh1/CLionProjects/pdb/1e2s.pdb");
+    PDB d7("/home/omkarkh1/CLionProjects/pdb/2csn.pdb");
+    PDB d8("/home/omkarkh1/CLionProjects/pdb/1pa9.pdb");
+    PDB d9("/home/omkarkh1/CLionProjects/pdb/1e2s.pdb");
 
     d1.write_to_file("/home/omkarkh1/CLionProjects/pdb/d1.txt");
     d1.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a1.txt");
@@ -997,12 +1252,12 @@ int main() {
     d5.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a5.txt");
     d6.write_to_file("/home/omkarkh1/CLionProjects/pdb/d6.txt");
     d6.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a6.txt");
-//    d7.write_to_file("/home/omkarkh1/CLionProjects/pdb/d7.txt");
-//    d7.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a7.txt");
-//    d8.write_to_file("/home/omkarkh1/CLionProjects/pdb/d8.txt");
-//    d8.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a8.txt");
-//    d9.write_to_file("/home/omkarkh1/CLionProjects/pdb/d9.txt");
-//    d9.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+    d7.write_to_file("/home/omkarkh1/CLionProjects/pdb/d7.txt");
+    d7.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+    d8.write_to_file("/home/omkarkh1/CLionProjects/pdb/d8.txt");
+    d8.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+    d9.write_to_file("/home/omkarkh1/CLionProjects/pdb/d9.txt");
+    d9.create_txt_for_atom("/home/omkarkh1/CLionProjects/pdb/a9.txt");
 
     Atom a1("a1");
     Atom a2("a2");
@@ -1010,9 +1265,9 @@ int main() {
     Atom a4("a4");
     Atom a5("a5");
     Atom a6("a6");
-//    Atom a7("a7");
-//    Atom a8("a8");
-//    Atom a9("a9");
+    Atom a7("a7");
+    Atom a8("a8");
+    Atom a9("a9");
 
     vector<float> xa1 = a1.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a1.txt");
     vector<float> ya1 = a1.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a1.txt");
@@ -1038,17 +1293,17 @@ int main() {
     vector<float> ya6 = a6.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a6.txt");
     vector<float> za6 = a6.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a6.txt");
 
-//    vector<float> xa7 = a7.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
-//    vector<float> ya7 = a7.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
-//    vector<float> za7 = a7.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
-//
-//    vector<float> xa8 = a8.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
-//    vector<float> ya8 = a8.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
-//    vector<float> za8 = a8.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
-//
-//    vector<float> xa9 = a9.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
-//    vector<float> ya9 = a9.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
-//    vector<float> za9 = a9.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+    vector<float> xa7 = a7.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+    vector<float> ya7 = a7.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+    vector<float> za7 = a7.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a7.txt");
+
+    vector<float> xa8 = a8.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+    vector<float> ya8 = a8.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+    vector<float> za8 = a8.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a8.txt");
+
+    vector<float> xa9 = a9.getAllXcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+    vector<float> ya9 = a9.getAllYcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
+    vector<float> za9 = a9.getAllZcoordinates("/home/omkarkh1/CLionProjects/pdb/a9.txt");
 
     vi dim1 = a1.getDimensions(xa1,ya1,za1);
     vi dim2 = a2.getDimensions(xa2,ya2,za2);
@@ -1056,9 +1311,9 @@ int main() {
     vi dim4 = a4.getDimensions(xa4,ya4,za4);
     vi dim5 = a5.getDimensions(xa5,ya5,za5);
     vi dim6 = a6.getDimensions(xa6,ya6,za6);
-//    vi dim7 = a7.getDimensions(xa7,ya7,za7);
-//    vi dim8 = a8.getDimensions(xa8,ya8,za8);
-//    vi dim9 = a9.getDimensions(xa9,ya9,za9);
+    vi dim7 = a7.getDimensions(xa7,ya7,za7);
+    vi dim8 = a8.getDimensions(xa8,ya8,za8);
+    vi dim9 = a9.getDimensions(xa9,ya9,za9);
 
 //    cout<<dim1[0]<<" "<<dim1[1]<<" "<<dim1[2]<<endl;
 //    cout<<dim2[0]<<" "<<dim2[1]<<" "<<dim2[2]<<endl;
@@ -1067,7 +1322,7 @@ int main() {
 //    cout<<dim5[0]<<" "<<dim5[1]<<" "<<dim5[2]<<endl;
 //    cout<<dim6[0]<<" "<<dim6[1]<<" "<<dim6[2]<<endl;
 
-    Algorithm algorithm(150,150,150);
+    Algorithm algorithm(200,200,200);
     //cout<<algorithm.L << " "<<algorithm.W << " "<<algorithm.H <<endl;
 
     vector<pair<vi,string>>a;
@@ -1077,9 +1332,9 @@ int main() {
     vector<string>v4;
     vector<string>v5;
     vector<string>v6;
-//    vector<string>v7;
-//    vector<string>v8;
-//    vector<string>v9;
+    vector<string>v7;
+    vector<string>v8;
+    vector<string>v9;
 
     boost::split(v1, d1.file_name, boost::is_any_of("/"));
     boost::split(v2, d2.file_name, boost::is_any_of("/"));
@@ -1087,9 +1342,9 @@ int main() {
     boost::split(v4, d4.file_name, boost::is_any_of("/"));
     boost::split(v5, d5.file_name, boost::is_any_of("/"));
     boost::split(v6, d6.file_name, boost::is_any_of("/"));
-//    boost::split(v7, d7.file_name, boost::is_any_of("/"));
-//    boost::split(v8, d8.file_name, boost::is_any_of("/"));
-//    boost::split(v9, d9.file_name, boost::is_any_of("/"));
+    boost::split(v7, d7.file_name, boost::is_any_of("/"));
+    boost::split(v8, d8.file_name, boost::is_any_of("/"));
+    boost::split(v9, d9.file_name, boost::is_any_of("/"));
 
     string n1 = v1[v1.size()-1];
     string n2 = v2[v2.size()-1];
@@ -1097,9 +1352,9 @@ int main() {
     string n4 = v4[v4.size()-1];
     string n5 = v5[v5.size()-1];
     string n6 = v6[v6.size()-1];
-//    string n7 = v7[v7.size()-1];
-//    string n8 = v8[v8.size()-1];
-//    string n9 = v9[v9.size()-1];
+    string n7 = v7[v7.size()-1];
+    string n8 = v8[v8.size()-1];
+    string n9 = v9[v9.size()-1];
 
     string name1(n1.begin(),n1.end()-4);
     string name2(n2.begin(),n2.end()-4);
@@ -1107,9 +1362,9 @@ int main() {
     string name4(n4.begin(),n4.end()-4);
     string name5(n5.begin(),n5.end()-4);
     string name6(n6.begin(),n6.end()-4);
-//    string name7(n7.begin(),n7.end()-4);
-//    string name8(n8.begin(),n8.end()-4);
-//    string name9(n9.begin(),n9.end()-4);
+    string name7(n7.begin(),n7.end()-4);
+    string name8(n8.begin(),n8.end()-4);
+    string name9(n9.begin(),n9.end()-4);
 
     char letters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     char x1 = letters[rand() % 62];
@@ -1128,9 +1383,9 @@ int main() {
     name4.push_back(x4);
     name5.push_back(x5);
     name6.push_back(x6);
-//    name7.push_back(x7);
-//    name8.push_back(x8);
-//    name9.push_back(x9);
+    name7.push_back(x7);
+    name8.push_back(x8);
+    name9.push_back(x9);
 
     a.push_back({dim1,name1});
     a.push_back({dim2,name2});
@@ -1138,9 +1393,9 @@ int main() {
     a.push_back({dim4,name4});
     a.push_back({dim5,name5});
     a.push_back({dim6,name6});
-//    a.push_back({dim7,name7});
-//    a.push_back({dim8,name8});
-//    a.push_back({dim9,name9});
+    a.push_back({dim7,name7});
+    a.push_back({dim8,name8});
+    a.push_back({dim9,name9});
 
     auto start = high_resolution_clock::now();
     algorithm.dynamicDistance(a);
